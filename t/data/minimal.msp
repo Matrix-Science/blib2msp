@@ -1,0 +1,40 @@
+Name: IQVR/2
+MW: 514.086
+Comment: Parent=258.051 Mods=0 RetentionTime=120.5 Score=0.95 ScoreType=PERCOLATOR QVALUE Protein=sp|TRYP_PIG|
+Num peaks: 5
+175.119 1000.0
+241.845 3259.79
+273.934 6814.63
+385.088 1973.7
+402.116 4458.79
+
+Name: MLQGR/2
+MW: 619.310
+Comment: Parent=310.663 Mods=1(1,M,Oxidation) RetentionTime=180.3 Score=0.88 ScoreType=PERCOLATOR QVALUE Protein=sp|CATA_HUMAN|
+Num peaks: 6
+232.222 617.16
+256.260 802.82
+278.797 4802.82
+360.318 1464.88
+473.365 225.6
+519.373 7.92
+
+Name: LKCASLQK/3
+MW: 946.527
+Comment: Parent=316.517 Mods=1(3,C,Carbamidomethyl) RetentionTime=150.0 Score=0.92 ScoreType=PERCOLATOR QVALUE Protein=sp|ALBU_HUMAN|
+Num peaks: 5
+147.113 400.0
+304.177 1000.0
+417.261 800.0
+530.345 600.0
+643.429 400.0
+
+Name: SCRSYR/3
+MW: 868.572
+Comment: Parent=290.532 Mods=2(1,S,Acetyl)(2,C,Carbamidomethyl) RetentionTime=200.0 Score=0.85 ScoreType=PERCOLATOR QVALUE Protein=sp|K2M3_SHEEP|
+Num peaks: 4
+238.446 960.69
+247.592 3862.13
+323.600 2623.22
+416.114 680.73
+

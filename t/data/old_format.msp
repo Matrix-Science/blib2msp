@@ -1,0 +1,19 @@
+Name: LKCASLQK/3
+MW: 946.527
+Comment: Spec=Consensus Mods=1/2,C,Carbamidomethyl Parent=316.517 Nreps=3 Naa=8 Protein=sp|ALBU_HUMAN|
+Num peaks: 4
+147.113 400.0
+304.177 1000.0
+530.345 600.0
+643.429 400.0
+
+Name: SCRSYR/3
+MW: 868.572
+Comment: Spec=Consensus Mods=2/0,S,Acetyl/1,C,Carbamidomethyl Parent=290.532 Nreps=7 Naa=6 Protein=sp|K2M3_SHEEP|
+Num peaks: 5
+238.446 960.69
+247.592 3862.13
+264.092 605.78
+323.600 2623.22
+416.114 680.73
+

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<umod:unimod xmlns:umod="http://www.unimod.org/xmlns/schema/unimod_2" majorVersion="2" minorVersion="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.unimod.org/xmlns/schema/unimod_2 unimod_2.xsd">
+
+  <umod:elements>
+    <umod:elem avge_mass="1.00794" full_name="Hydrogen" mono_mass="1.007825035" title="H"/>
+    <umod:elem avge_mass="12.0107" full_name="Carbon" mono_mass="12" title="C"/>
+    <umod:elem avge_mass="14.0067" full_name="Nitrogen" mono_mass="14.003074" title="N"/>
+    <umod:elem avge_mass="15.9994" full_name="Oxygen" mono_mass="15.99491463" title="O"/>
+    <umod:elem avge_mass="30.973761" full_name="Phosphorous" mono_mass="30.973762" title="P"/>
+    <umod:elem avge_mass="32.065" full_name="Sulfur" mono_mass="31.9720707" title="S"/>
+  </umod:elements>
+
+  <umod:modifications>
+    <umod:mod approved="true" date_time_modified="2017-11-08 16:08:56" date_time_posted="2002-08-19 19:17:11" full_name="Acetylation" group_of_poster="admin" record_id="1" title="Acetyl" username_of_poster="unimod">
+      <umod:specificity classification="Post-translational" hidden="false" position="Protein N-term" site="N-term" spec_group="5"/>
+      <umod:specificity classification="Multiple" hidden="false" position="Any N-term" site="N-term" spec_group="2"/>
+      <umod:specificity classification="Multiple" hidden="false" position="Anywhere" site="K" spec_group="1"/>
+      <umod:delta avge_mass="42.0367" composition="H(2) C(2) O" mono_mass="42.010565">
+        <umod:element number="2" symbol="H"/>
+        <umod:element number="2" symbol="C"/>
+        <umod:element number="1" symbol="O"/>
+      </umod:delta>
+    </umod:mod>
+    <umod:mod approved="true" date_time_modified="2017-10-09 10:27:10" date_time_posted="2002-08-19 19:17:11" full_name="Iodoacetamide derivative" group_of_poster="admin" record_id="4" title="Carbamidomethyl" username_of_poster="unimod">
+      <umod:specificity classification="Artefact" hidden="false" position="Any N-term" site="N-term" spec_group="3"/>
+      <umod:specificity classification="Chemical derivative" hidden="false" position="Anywhere" site="C" spec_group="1"/>
+      <umod:specificity classification="Chemical derivative" hidden="true" position="Anywhere" site="M" spec_group="11">
+        <umod:NeutralLoss avge_mass="0.0000" composition="0" flag="false" mono_mass="0.000000"/>
+        <umod:NeutralLoss avge_mass="105.1588" composition="H(7) C(3) N O S" flag="false" mono_mass="105.024835">
+          <umod:element number="7" symbol="H"/>
+          <umod:element number="3" symbol="C"/>
+          <umod:element number="1" symbol="N"/>
+          <umod:element number="1" symbol="O"/>
+          <umod:element number="1" symbol="S"/>
+        </umod:NeutralLoss>
+      </umod:specificity>
+      <umod:delta avge_mass="57.0513" composition="H(3) C(2) N O" mono_mass="57.021464">
+        <umod:element number="3" symbol="H"/>
+        <umod:element number="2" symbol="C"/>
+        <umod:element number="1" symbol="N"/>
+        <umod:element number="1" symbol="O"/>
+      </umod:delta>
+    </umod:mod>
+    <umod:mod approved="false" date_time_modified="2018-10-25 09:32:26" date_time_posted="2002-08-19 19:17:11" full_name="Deamidation" group_of_poster="admin" record_id="7" title="Deamidated" username_of_poster="unimod">
+      <umod:specificity classification="Artefact" hidden="false" position="Anywhere" site="Q" spec_group="1"/>
+      <umod:specificity classification="Artefact" hidden="false" position="Anywhere" site="N" spec_group="1"/>
+      <umod:delta avge_mass="0.9848" composition="H(-1) N(-1) O" mono_mass="0.984016">
+        <umod:element number="-1" symbol="H"/>
+        <umod:element number="-1" symbol="N"/>
+        <umod:element number="1" symbol="O"/>
+      </umod:delta>
+    </umod:mod>
+    <umod:mod approved="true" date_time_modified="2018-08-13 13:42:59" date_time_posted="2002-08-19 19:17:11" full_name="Phosphorylation" group_of_poster="admin" record_id="21" title="Phospho" username_of_poster="unimod">
+      <umod:specificity classification="Post-translational" hidden="false" position="Anywhere" site="Y" spec_group="2"/>
+      <umod:specificity classification="Post-translational" hidden="false" position="Anywhere" site="T" spec_group="1">
+        <umod:NeutralLoss avge_mass="97.9952" composition="H(3) O(4) P" flag="false" mono_mass="97.976896">
+          <umod:element number="3" symbol="H"/>
+          <umod:element number="4" symbol="O"/>
+          <umod:element number="1" symbol="P"/>
+        </umod:NeutralLoss>
+        <umod:NeutralLoss avge_mass="0.0000" composition="0" flag="false" mono_mass="0.000000"/>
+      </umod:specificity>
+      <umod:specificity classification="Post-translational" hidden="false" position="Anywhere" site="S" spec_group="1">
+        <umod:NeutralLoss avge_mass="0.0000" composition="0" flag="false" mono_mass="0.000000"/>
+        <umod:NeutralLoss avge_mass="97.9952" composition="H(3) O(4) P" flag="false" mono_mass="97.976896">
+          <umod:element number="3" symbol="H"/>
+          <umod:element number="4" symbol="O"/>
+          <umod:element number="1" symbol="P"/>
+        </umod:NeutralLoss>
+      </umod:specificity>
+      <umod:delta avge_mass="79.9799" composition="H O(3) P" mono_mass="79.966331">
+        <umod:element number="1" symbol="H"/>
+        <umod:element number="3" symbol="O"/>
+        <umod:element number="1" symbol="P"/>
+      </umod:delta>
+    </umod:mod>
+    <umod:mod approved="true" date_time_modified="2015-08-26 14:39:25" date_time_posted="2002-08-19 19:17:11" full_name="Methylation" group_of_poster="admin" record_id="34" title="Methyl" username_of_poster="unimod">
+      <umod:specificity classification="Post-translational" hidden="false" position="Anywhere" site="K" spec_group="1"/>
+      <umod:specificity classification="Post-translational" hidden="false" position="Anywhere" site="R" spec_group="2"/>
+      <umod:specificity classification="Chemical derivative" hidden="true" position="Anywhere" site="C" spec_group="3"/>
+      <umod:delta avge_mass="14.0266" composition="H(2) C" mono_mass="14.015650">
+        <umod:element number="2" symbol="H"/>
+        <umod:element number="1" symbol="C"/>
+      </umod:delta>
+    </umod:mod>
+    <umod:mod approved="false" date_time_modified="2017-10-06 17:05:11" date_time_posted="2002-08-19 19:17:11" full_name="Oxidation or Hydroxylation" group_of_poster="admin" record_id="35" title="Oxidation" username_of_poster="unimod">
+      <umod:specificity classification="Artefact" hidden="false" position="Anywhere" site="W" spec_group="10"/>
+      <umod:specificity classification="Artefact" hidden="false" position="Anywhere" site="H" spec_group="10"/>
+      <umod:specificity classification="Artefact" hidden="false" position="Anywhere" site="M" spec_group="8">
+        <umod:NeutralLoss avge_mass="0.0000" composition="0" flag="false" mono_mass="0.000000"/>
+        <umod:NeutralLoss avge_mass="64.1069" composition="H(4) C O S" flag="false" mono_mass="63.998285">
+          <umod:element number="4" symbol="H"/>
+          <umod:element number="1" symbol="C"/>
+          <umod:element number="1" symbol="O"/>
+          <umod:element number="1" symbol="S"/>
+        </umod:NeutralLoss>
+      </umod:specificity>
+      <umod:delta avge_mass="15.9994" composition="O" mono_mass="15.994915">
+        <umod:element number="1" symbol="O"/>
+      </umod:delta>
+    </umod:mod>
+  </umod:modifications>
+
+</umod:unimod>

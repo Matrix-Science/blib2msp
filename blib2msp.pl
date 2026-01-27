@@ -135,8 +135,9 @@ my $HAS_AHO_CORASICK = 0;
 my $AHO_CORASICK_MODULE = '';
 eval {
     require Algorithm::AhoCorasick;
+    require Algorithm::AhoCorasick::SearchMachine;
     $HAS_AHO_CORASICK = 1;
-    $AHO_CORASICK_MODULE = 'Algorithm::AhoCorasick';
+    $AHO_CORASICK_MODULE = 'Algorithm::AhoCorasick::SearchMachine';
 };
 if (!$HAS_AHO_CORASICK) {
     warn "Algorithm::AhoCorasick not available, using fallback search. Install with: cpanm Algorithm::AhoCorasick\n" if $ENV{DEBUG};
@@ -399,12 +400,10 @@ sub load_unimod {
     # Try to find unimod.xml if not specified
     unless ($unimod_file && -f $unimod_file) {
         my @search_paths = (
-            File::Spec->catfile(dirname($0), 'unimod', 'unimod.xml'),  # Script directory/unimod/
-            'unimod/unimod.xml',  # Current directory/unimod/
-            'unimod.xml',  # Current directory
-            File::Spec->catfile(dirname($0), 'unimod.xml'),  # Script directory
-            'msparser/config/unimod.xml',  # Mascot Parser's included file
-            File::Spec->catfile(dirname($0), 'msparser', 'config', 'unimod.xml'),
+            'unimod.xml',
+            'documentation/unimod.xml',
+            File::Spec->catfile(dirname($0), 'unimod.xml'),
+            File::Spec->catfile(dirname($0), 'documentation', 'unimod.xml'),
         );
 
         for my $path (@search_paths) {
@@ -423,8 +422,6 @@ sub load_unimod {
     # Find unimod_2.xsd schema file
     my $schema_file;
     my @schema_paths = (
-        File::Spec->catfile(dirname($0), 'unimod', 'unimod_2.xsd'),  # Script directory
-        'unimod/unimod_2.xsd',  # Current directory
         'msparser/config/unimod_2.xsd',
         File::Spec->catfile(dirname($0), 'msparser', 'config', 'unimod_2.xsd'),
         File::Spec->catfile($MSPARSER_PATH, '..', 'config', 'unimod_2.xsd'),
@@ -890,7 +887,8 @@ sub build_peptide_automaton {
         if ($AHO_CORASICK_MODULE eq 'Algorithm::AhoCorasick::XS') {
             $ac = Algorithm::AhoCorasick::XS->new($peptides_ref);
         } else {
-            $ac = Algorithm::AhoCorasick->new($peptides_ref);
+            # Algorithm::AhoCorasick::SearchMachine takes a list of keywords, not an arrayref
+            $ac = Algorithm::AhoCorasick::SearchMachine->new(@$peptides_ref);
         }
     };
     
@@ -933,12 +931,16 @@ sub search_proteins_parallel {
             for my $accession (@$chunk_ref) {
                 my $seq = $proteins_ref->{$accession};
                 next unless $seq;
-                
-                # Search for all peptides in this protein sequence
-                my @matches = $ac->matches($seq);
-                
-                for my $match (@matches) {
-                    my $peptide = $match;  # The matched pattern
+
+                # Search for all peptides in this protein sequence using feed()
+                my %matched_peptides;
+                $ac->feed($seq, sub {
+                    my ($pos, $keyword) = @_;
+                    $matched_peptides{$keyword} = 1;
+                    return undef;  # Continue searching
+                });
+
+                for my $peptide (keys %matched_peptides) {
                     $local_results{$peptide} //= [];
                     push @{$local_results{$peptide}}, $accession
                         unless grep { $_ eq $accession } @{$local_results{$peptide}};
@@ -972,16 +974,21 @@ sub search_proteins_parallel {
         for my $accession (@accessions) {
             my $seq = $proteins_ref->{$accession};
             next unless $seq;
-            
-            my @matches = $ac->matches($seq);
-            
-            for my $match (@matches) {
-                my $peptide = $match;
+
+            # Search for all peptides in this protein sequence using feed()
+            my %matched_peptides;
+            $ac->feed($seq, sub {
+                my ($pos, $keyword) = @_;
+                $matched_peptides{$keyword} = 1;
+                return undef;  # Continue searching
+            });
+
+            for my $peptide (keys %matched_peptides) {
                 $peptide_to_proteins{$peptide} //= [];
                 push @{$peptide_to_proteins{$peptide}}, $accession
                     unless grep { $_ eq $accession } @{$peptide_to_proteins{$peptide}};
             }
-            
+
             $processed++;
             if ($processed % $progress_interval == 0) {
                 log_msg(LOG_INFO, "  Processed $processed / $total_proteins proteins...");
@@ -2051,7 +2058,7 @@ blib2msp.pl - Bidirectional BLIB/MSP spectral library converter
 
 =head1 VERSION
 
-Version 1.5
+Version 1.3
 
 =head1 SYNOPSIS
 

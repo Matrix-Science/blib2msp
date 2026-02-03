@@ -153,6 +153,24 @@ my $MASS_TOLERANCE = 0.001;  # Mass tolerance for Unimod lookup (Da)
 my %UNIMOD_MASS_TO_NAME;   # mass -> name (for BLIB to MSP)
 my %UNIMOD_NAME_TO_MASS;   # name -> mass (for MSP to BLIB)
 
+# Preferred modification names when multiple Unimod entries share the same mass
+# These are well-known modifications that should take precedence over obscure alternatives
+# Key: mass rounded to 4 decimal places, Value: preferred modification name
+my %PREFERRED_MODS = (
+    '15.9949'  => 'Oxidation',        # vs Ala->Ser, Asn->Asp, etc.
+    '57.0215'  => 'Carbamidomethyl',  # vs Ala->Glu, Gly->Asn, etc.
+    '42.0106'  => 'Acetyl',           # vs Ser->Glu, etc.
+    '79.9663'  => 'Phospho',          # vs Sulfo
+    '0.9840'   => 'Deamidated',       # vs Asn->Asp (deamidation of N/Q)
+    '28.0313'  => 'Dimethyl',         # vs Ala->Val, etc.
+    '14.0157'  => 'Methyl',           # vs Gly->Ala, etc.
+    '27.9949'  => 'Formyl',           # vs Ser->Cys, etc.
+    '226.0776' => 'ICAT-C',           # common quantitative label
+    '227.1270' => 'TMT',              # vs TMTpro (older 2-plex tag)
+    '304.2072' => 'iTRAQ8plex',       # vs similar masses
+    '144.1021' => 'iTRAQ4plex',       # common quantitative label
+);
+
 # Global modification tracking
 # Structure: { "name|mass|site" => count }
 my %MOD_SUMMARY;
@@ -400,6 +418,10 @@ sub load_unimod {
     # Try to find unimod.xml if not specified
     unless ($unimod_file && -f $unimod_file) {
         my @search_paths = (
+            # Check unimod/ subdirectory first (standard location with script)
+            File::Spec->catfile(dirname($0), 'unimod', 'unimod.xml'),
+            'unimod/unimod.xml',
+            # Legacy locations
             'unimod.xml',
             'documentation/unimod.xml',
             File::Spec->catfile(dirname($0), 'unimod.xml'),
@@ -422,6 +444,8 @@ sub load_unimod {
     # Find unimod_2.xsd schema file
     my $schema_file;
     my @schema_paths = (
+        # First check same directory as unimod.xml
+        File::Spec->catfile(dirname($unimod_file), 'unimod_2.xsd'),
         'msparser/config/unimod_2.xsd',
         File::Spec->catfile(dirname($0), 'msparser', 'config', 'unimod_2.xsd'),
         File::Spec->catfile($MSPARSER_PATH, '..', 'config', 'unimod_2.xsd'),
@@ -489,19 +513,38 @@ sub load_unimod {
     # Build final lookups:
     # 1) mass -> name (for BLIB to MSP)
     # 2) name -> mass (for MSP to BLIB)
-    # Priority: 1) approved first, 2) alphabetically first by title
+    # Priority: 1) preferred mods, 2) approved first, 3) alphabetically first by title
     for my $mass_key (keys %mods_by_mass) {
         my @mods = @{$mods_by_mass{$mass_key}};
+        my $selected_name;
 
-        # Sort: approved first, then alphabetically by title
-        @mods = sort {
-            ($b->{approved} <=> $a->{approved})  # approved first
-                ||
-            (lc($a->{title}) cmp lc($b->{title}))  # then alphabetically
-        } @mods;
+        # First check if there's a preferred modification for this mass
+        if (exists $PREFERRED_MODS{$mass_key}) {
+            my $preferred = $PREFERRED_MODS{$mass_key};
+            # Check if the preferred mod exists in our list
+            my ($preferred_mod) = grep { $_->{title} eq $preferred } @mods;
+            if ($preferred_mod) {
+                $selected_name = $preferred;
+                log_msg(LOG_DEBUG, "Unimod: mass=$mass_key -> $selected_name (preferred)");
+            }
+        }
 
-        # Use the first (best) match for mass->name
-        $UNIMOD_MASS_TO_NAME{$mass_key} = $mods[0]->{title};
+        # If no preferred mod found, use standard sorting
+        unless ($selected_name) {
+            # Sort: approved first, then alphabetically by title
+            @mods = sort {
+                ($b->{approved} <=> $a->{approved})  # approved first
+                    ||
+                (lc($a->{title}) cmp lc($b->{title}))  # then alphabetically
+            } @mods;
+
+            $selected_name = $mods[0]->{title};
+            log_msg(LOG_DEBUG, "Unimod: mass=$mass_key -> $selected_name" .
+                ($mods[0]->{approved} ? " (approved)" : ""));
+        }
+
+        # Use the selected match for mass->name
+        $UNIMOD_MASS_TO_NAME{$mass_key} = $selected_name;
 
         # Build name->mass lookup (use first occurrence for each name)
         for my $mod (@mods) {
@@ -509,9 +552,6 @@ sub load_unimod {
             # Only set if not already set (prefer approved/alphabetically first)
             $UNIMOD_NAME_TO_MASS{$name} //= $mod->{delta};
         }
-
-        log_msg(LOG_DEBUG, "Unimod: mass=$mass_key -> $mods[0]->{title}" .
-            ($mods[0]->{approved} ? " (approved)" : ""));
     }
 
     my $mass_count = scalar keys %UNIMOD_MASS_TO_NAME;
